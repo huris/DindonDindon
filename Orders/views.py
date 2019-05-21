@@ -8,8 +8,8 @@ from DinDonBackend.permissions import UserBasePermission, SuperPermission, Custo
 from Orders.models import Order, Transaction, OrderStatus
 from Orders.serializers import OrderSerializer, TransactionSerializer, TransactionUpdateSerializer
 from Users.models import UserType
-from Utils.keys.Key import AliPayKey
-
+# from Utils.keys.Key import AliPayKey
+from Utils.keys.Key_example import AliPayKey
 
 class OrderListView(ListAPIView):
     """
@@ -54,19 +54,26 @@ class OrderCreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        instance = self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
         price = serializer.validated_data['order_price']
 
-        Host = "120.24.91.195:8000"
-        ret_url = "http://" + Host + "/orders/notify"
+        Host = "xxxxx:8000"
+        # ret_url = "http://" + Host + "/orders/notify"
+        """
+        我的建议是notify_url和return_url不应该是一致的，
+        notify_url接口的作用是获取支付宝返回的订单信息，存入数据库，
+        return_url接口是展示某个已经付完款订单的详细信息(当然也可以换成其他的，根据自己的设计，付完款后跳到哪里去)
+        """
+        ret_url = "http://" + Host + "/orders/{pk}".format(pk=instance.order_id)
+        notify_url = "http://" + Host + "/orders/notify"
 
         app_private_key = AliPayKey.app_private_key()
         alipay_public_key = AliPayKey.alipay_public_key()
         alipay = AliPay(
             appid=AliPayKey.APP_ID,
-            app_notify_url=ret_url,  # 默认回调url
+            app_notify_url=notify_url,  # 默认回调url
             app_private_key_string=app_private_key,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
             alipay_public_key_string=alipay_public_key,
@@ -80,7 +87,7 @@ class OrderCreateView(CreateAPIView):
             total_amount=price,
             subject="支付订单",
             return_url=ret_url,
-            notify_url=ret_url  # 可选, 不填则使用默认notify url
+            # notify_url=ret_url  # 可选, 不填则使用默认notify url
         )
 
         pay_url = AliPayKey.GATEWAY_DEV + "?" + order_string
@@ -93,13 +100,21 @@ class OrderCreateView(CreateAPIView):
 
         return Response(ret_data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def perform_create(self, serializer):
+        return serializer.save()
 
 class AlipayProcessView(APIView):
-    def get(self, request, *args, **kwargs):
-        pass
+    # def get(self, request, *args, **kwargs):
+    #     pass
 
-    def post(self, request, *args, **kwargs):
-        pass
+    def post(self, request):
+        print('callback ok')
+
+        # TODO 在这里拿到订单号，先进行签名验证，确保这个跳转是从支付宝过来的，
+        #  然后拿到订单状态等一些信息，存入数据库
+
+        # NOTE： 一定要返回"success",不能是别的信息
+        return Response('success')
 
 
 class OrderProcessView(UpdateAPIView):

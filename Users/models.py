@@ -5,6 +5,7 @@ from django.db import models
 
 
 class UserType:
+    # TODO BUG 数字不一致。。
     Customer = 1
     Manager = 2
     Chef = 3
