@@ -17,6 +17,8 @@ import os
 
 # 项目路径
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from datetime import timedelta
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -91,6 +93,11 @@ REST_FRAMEWORK = {
 }
 # 手机号正则表达式
 REGEX_PHONE = "1[3|4|5|7|8][0-9]{9}"
+
+# JWT 配置
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+}
 
 TEMPLATES = [
     {

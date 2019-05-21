@@ -48,7 +48,7 @@ class OrderCreateView(CreateAPIView):
     """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = (OrderBasePermission, CustomerPermission)
+    # permission_classes = (OrderBasePermission, CustomerPermission)
 
 
 # TODO:支付API

@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveAPIView
 
-from DinDonBackend.permissions import UserBasePermission, CustomerPermission, SuperPermission
+from DinDonBackend.permissions import UserBasePermission, CustomerPermission, SuperPermission, WaiterPermission
 from Tables.filters import TableFilter
 from Tables.models import Table, BookTime
 from Tables.serializers import TableListSerializer, BookTableSerializer, BookTimeSerializer
@@ -16,6 +16,22 @@ class TableListView(ListAPIView):
     serializer_class = TableListSerializer
     filter_class = TableFilter
     filter_backends = (DjangoFilterBackend,)
+
+class TableRetrieveView(RetrieveAPIView):
+    """
+    获取某个餐桌的详情
+    """
+    queryset = Table.objects.all()
+    serializer_class = TableListSerializer
+    permission_classes = (UserBasePermission, )
+
+class TableUpdateView(UpdateAPIView):
+    """
+    修改餐桌状态
+    """
+    queryset = Table.objects.all()
+    serializer_class = TableListSerializer
+    permission_classes = (UserBasePermission & (WaiterPermission | SuperPermission),)
 
 
 class BookTimeListView(ListAPIView):

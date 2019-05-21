@@ -120,7 +120,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'transaction'
         )
         extra_kwargs = {
-            "order_script": {"write_only": True}
+            "order_script": {"allow_null": True}
         }
 
     def validate_pay_method(self, data):

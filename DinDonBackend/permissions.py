@@ -10,7 +10,7 @@ class SuperPermission(permissions.BasePermission):
 
 class UserBasePermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        return not request.user.is_anonymous
+        return bool(request.user and request.user.is_authenticated)
 
 
 class CustomerPermission(permissions.BasePermission):
@@ -21,3 +21,8 @@ class CustomerPermission(permissions.BasePermission):
 class ChefPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.user_type == UserType.Chef
+
+
+class WaiterPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.user_type == UserType.Waiter
