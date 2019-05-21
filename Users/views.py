@@ -60,6 +60,7 @@ class LoginWithSmsCodeView(CreateAPIView):
 
         token = TokenObtainPairSerializer().get_token(user)
         data = serializer.data
+        data.update({'uid': user.id})
         data.update({'username': user.username})
         data.update({'refresh': str(token)})
         data.update({'access': str(token.access_token)})
@@ -81,6 +82,7 @@ class UserRegisterView(CreateAPIView):
 
         data = serializer.data
         token = TokenObtainPairSerializer().get_token(user)
+        data.update({'uid': user.id})
         data.update({'username': user.username})
         data.update({'refresh': str(token)})
         data.update({'access': str(token.access_token)})

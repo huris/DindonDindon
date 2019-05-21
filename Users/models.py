@@ -5,10 +5,10 @@ from django.db import models
 
 
 class UserType:
-    Customer = 1
-    Manager = 2
-    Chef = 3
-    Waiter = 4
+    Customer = 0
+    Manager = 1
+    Chef = 2
+    Waiter = 3
 
     UserTypeChoices = (
         (0, '顾客'),
