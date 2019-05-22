@@ -9,4 +9,5 @@ db.sqlite3
 将删除 Tables/__pycache__/
 将删除 Users/__pycache__/
 将删除 __pycache__/
-Utils/Key.py
+Utils/keys/Key.py
+*.pem

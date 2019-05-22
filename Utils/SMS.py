@@ -1,7 +1,7 @@
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
 
-from Utils.Key import APIKey
+from Utils.keys.Key import SMSAPIKey as APIKey
 
 
 class SMS:
