@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView
 
-from DinDonBackend.permissions import UserBasePermission, SuperPermission, CustomerPermission
-from Orders.models import Order, Transaction
+from DinDonBackend.permissions import UserBasePermission, SuperPermission, CustomerPermission, ChefPermission
+from Orders.models import Order, Transaction, OrderStatus
 from Orders.serializers import OrderSerializer, TransactionSerializer, TransactionUpdateSerializer
 from Users.models import UserType
 
@@ -22,6 +22,15 @@ class OrderListView(ListAPIView):
             return Order.objects.filter(order_user=user)
 
 
+class ChefOrderListView(ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = (UserBasePermission, ChefPermission)
+
+    def get_queryset(self):
+        return Order.objects.filter(transaction__order_status=OrderStatus.Payed)
+
+
 class OrderRetrieveAPIView(RetrieveAPIView):
     """
     取回订单
@@ -38,30 +47,27 @@ class OrderRetrieveAPIView(RetrieveAPIView):
             return Order.objects.filter(order_user=user)
 
 
-class OrderBasePermission(object):
-    pass
-
-
 class OrderCreateView(CreateAPIView):
     """
     创建订单
     """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    # permission_classes = (OrderBasePermission, CustomerPermission)
+    permission_classes = (UserBasePermission, CustomerPermission)
 
 
 # TODO:支付API
 class OrderPurchaseView(UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = TransactionSerializer
+    permission_classes = (UserBasePermission, CustomerPermission)
 
 
 class OrderProcessView(UpdateAPIView):
     """
     订单处理
     """
-    permission_classes = (UserBasePermission,)
     lookup_field = 'order'
     queryset = Transaction.objects.all()
     serializer_class = TransactionUpdateSerializer
+    permission_classes = (UserBasePermission,)

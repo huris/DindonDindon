@@ -102,7 +102,7 @@ class LoginWithPhonePasswordSerializer(TokenObtainPairSerializer):
                 )
             data = {}
             refresh = self.get_token(self.user)
-
+            data['uid'] = user_obj.id
             data['username'] = user_obj.username
             data['refresh'] = str(refresh)
             data['access'] = str(refresh.access_token)
@@ -117,7 +117,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     code = serializers.CharField(required=True, max_length=6, min_length=6, write_only=True)
 
     phone_number = serializers.CharField(required=True, allow_blank=False,
-                                         validators=[UniqueValidator(queryset=User.objects.all(), message="手机号已经存在")], write_only=True)
+                                         validators=[UniqueValidator(queryset=User.objects.all(), message="手机号已经存在")],
+                                         write_only=True)
 
     def validate(self, attrs):
         super().validate(attrs)
@@ -143,6 +144,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
         }
 
+
 class UserChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(max_length=20, required=True, write_only=True, help_text='旧密码')
     new_password = serializers.CharField(max_length=20, required=True, write_only=True, help_text='新密码')
@@ -159,7 +161,8 @@ class UserChangePasswordSerializer(serializers.Serializer):
         code = attrs.pop('code')
 
         five_minutes_ago = datetime.now() - timedelta(minutes=5)
-        query = VerifyCode.objects.filter(add_time__gt=five_minutes_ago, phone_number=phone_number,  purpose=2).order_by('-add_time')
+        query = VerifyCode.objects.filter(add_time__gt=five_minutes_ago, phone_number=phone_number, purpose=2).order_by(
+            '-add_time')
         if query:
             if query.first().code != code:
                 raise serializers.ValidationError('验证码错误')
