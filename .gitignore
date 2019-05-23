@@ -11,3 +11,4 @@ db.sqlite3
 将删除 __pycache__/
 Utils/keys/Key.py
 *.pem
+static/*

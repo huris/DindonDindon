@@ -189,12 +189,12 @@ USE_TZ = False  # 默认是Ture，时间是utc时间，由于我们要用本地�
 STATIC_URL = '/static/'
 
 # 设置根目录的静态资源文件夹 public_static
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'public_static')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # 设置App(index)的静态资源文件夹(index_static)
-os.path.join(BASE_DIR, 'index/index_static')
+# os.path.join(BASE_DIR, 'index/index_static')
 
 # STATIC_ROOT的作用是方便在服务器上部署项目,实现服务器和项目之间的映射
-STATIC_ROOT = os.path.join(BASE_DIR, 'all_static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # 跨域请求配置
 CORS_ALLOW_CREDENTIALS = True
