@@ -5,7 +5,7 @@ coreschema==0.0.4
 Django==2.2.4
 django-cors-headers==3.0.0
 django-filter==2.1.0
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 djangorestframework-simplejwt==4.3.0
 idna==2.8
 itypes==1.1.0
